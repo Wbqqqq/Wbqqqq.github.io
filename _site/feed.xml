@@ -5,17 +5,17 @@
     <description>嗨，我是 wbq，现居宁波。我会在这里写些东西，分享我的想法。。</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Aug 2018 11:56:06 +0800</pubDate>
-    <lastBuildDate>Tue, 21 Aug 2018 11:56:06 +0800</lastBuildDate>
+    <pubDate>Tue, 21 Aug 2018 12:26:45 +0800</pubDate>
+    <lastBuildDate>Tue, 21 Aug 2018 12:26:45 +0800</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
         <title>第一篇博客</title>
         <description>&lt;p&gt;用jekyll定制自己的blog，大家玩得开心。&lt;/p&gt;
 </description>
-        <pubDate>Tue, 21 Aug 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/08/firstblog/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/08/firstblog/</guid>
+        <pubDate>Sun, 20 Aug 2017 08:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2017/08/firstblog/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/08/firstblog/</guid>
         
         <category>wbq</category>
         
