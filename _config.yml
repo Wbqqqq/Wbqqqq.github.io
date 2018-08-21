@@ -1,9 +1,9 @@
 # Basic
-title: Jianstm
+title: wbq
 subtitle: Share My Thoughts
-welcome_message: <a href="https://ioscaff.com/" target="_blank">iOSCaff</a> 是一个新成立的 iOS 开发者社区，欢迎大家加入！
-description: 嗨，我是 Jianstm，现居深圳。我会在这里写些东西，分享我的想法。
-creator: <a href="http://onev.cat">@Jianstm</a>
+welcome_message: <a href="https://www.baidu.com/" target="_blank">先完成，再完美</a>
+description: 嗨，我是 wbq，现居宁波。我会在这里写些东西，分享我的想法。。
+creator: <a href="https://github.com/Wbqqqq">@wbq</a>
 
 url: "http://v2ambition.com"
 
@@ -32,16 +32,16 @@ paginate_path: "page/:num/"
 
 # Comment
 comment:
-    disqus: v2ambition
+    disqus:
     # duoshuo: 
     
 # Social
 social:
-    github: jianstm
-    weibo: jianstm
-    mail: jianstm@gmail.com
+    github: Wbqqqq
+    weibo:
+    mail: 353351363@qq.com
 
 # Google Analytics
 ga:
-    id: UA-113585198-1
-    host: v2ambition.com
+    id:
+    host:
