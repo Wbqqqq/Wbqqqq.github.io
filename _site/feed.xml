@@ -2,16 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>wbq</title>
-    <description>嗨，我是 wbq，现居宁波。我会在这里写些东西，分享我的想法。。</description>
+    <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Aug 2018 12:29:14 +0800</pubDate>
-    <lastBuildDate>Tue, 21 Aug 2018 12:29:14 +0800</lastBuildDate>
+    <pubDate>Tue, 21 Aug 2018 13:10:18 +0800</pubDate>
+    <lastBuildDate>Tue, 21 Aug 2018 13:10:18 +0800</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
         <title>第一篇博客</title>
-        <description>&lt;p&gt;用jekyll定制自己的blog，大家玩得开心。&lt;/p&gt;
+        <description>&lt;p&gt;用jekyll定制自己的blog，无需服务器，无需数据库 😂。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-code&quot;&gt;~ $ gem install jekyll
+
+~ $ jekyll new my-awesome-site
+
+~ $ cd my-awesome-site
+
+~/my-awesome-site $ bundle exec jekyll serve
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后打开 http://localhost:4000，就可以看到默认模版了，最后用GitHub Pages部署即可，祝大家玩得开心。&lt;/p&gt;
 </description>
         <pubDate>Tue, 21 Aug 2018 08:00:00 +0800</pubDate>
         <link>http://localhost:4000/2018/08/firstblog/</link>
