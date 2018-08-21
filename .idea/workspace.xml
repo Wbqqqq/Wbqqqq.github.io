@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="61ca8cbf-ddda-4cc3-9271-02f3d9e4b914" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/_posts/2018-08-21-firstblog.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2018-08-21-firstblog.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/2017/08/firstblog/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/2017/08/firstblog/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_site/2017/08/firstblog/index.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_site/feed.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/index.html" afterDir="false" />
     </list>
@@ -68,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/_posts/2018-08-21-firstblog.md">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="140">
-              <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+              <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -233,7 +233,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1534773608684</updated>
-      <workItem from="1534773610067" duration="8716000" />
+      <workItem from="1534773610067" duration="8762000" />
     </task>
     <task id="LOCAL-00001" summary="修改README">
       <created>1534815091466</created>
@@ -267,7 +267,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8716000" />
+    <option name="totallyTimeSpent" value="8762000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="30" y="55" width="1440" height="823" extended-state="0" />
@@ -420,7 +420,7 @@
     <entry file="file://$PROJECT_DIR$/_posts/2018-08-21-firstblog.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="140">
-          <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
         </state>
       </provider>
     </entry>
