@@ -5,13 +5,14 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 12 Nov 2021 16:48:29 +0800</pubDate>
-    <lastBuildDate>Fri, 12 Nov 2021 16:48:29 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Nov 2021 16:53:03 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Nov 2021 16:53:03 +0800</lastBuildDate>
     <generator>Jekyll v4.2.1</generator>
     
       <item>
         <title>浅谈区块链（一）</title>
-        <description>&lt;p&gt;话说很早就开始玩币了，从17年开始，从来没有赚过钱，当时是在网上冲浪发现这个东西，下了个火币来玩一玩，买了500块eos，事实证明eos到现在还是那个鸟样。这几天心血来潮，想要系统性地学习一下区块链的知识，再好好去研究一下别的项目，区块链的知识量真的是太大了，先总结第一篇，方便自己后续回顾。&lt;/p&gt;
+        <description>&lt;p&gt;这篇文章本来是发在简书，发出去的一刻，直接被锁，只能自己可见，估计是文章关键字扫到了，看来目前国内对这个管控还是挺严。
+话说很早就开始玩币了，从17年开始，从来没有赚过钱，当时是在网上冲浪发现这个东西，下了个火币来玩一玩，买了500块eos，事实证明eos到现在还是那个鸟样。这几天心血来潮，想要系统性地学习一下区块链的知识，再好好去研究一下别的项目，区块链的知识量真的是太大了，先总结第一篇，方便自己后续回顾。&lt;/p&gt;
 
 &lt;h3 id=&quot;比特币的交易挖矿原理&quot;&gt;比特币的交易、挖矿原理&lt;/h3&gt;
 
