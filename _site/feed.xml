@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 12 Nov 2021 16:53:03 +0800</pubDate>
-    <lastBuildDate>Fri, 12 Nov 2021 16:53:03 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Nov 2021 17:01:15 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Nov 2021 17:01:15 +0800</lastBuildDate>
     <generator>Jekyll v4.2.1</generator>
     
       <item>
@@ -534,6 +534,450 @@ primary_expression : IDENTIFIER | &quot;&amp;amp;&quot; IDENTIFIER | primary_exp
         <guid isPermaLink="true">http://localhost:4000/2021/06/21/%E8%81%8A%E8%81%8A%E7%83%AD%E6%9B%B4%E6%96%B0/</guid>
         
         <category>热更新</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>C++语法笔记</title>
+        <description>&lt;p&gt;最近需要用C++做一些跨平台的组件，我自己本身对C++的语法不是特别熟练，也算是边写边学。
+记录了一些平时开发过程中用到的语法笔记。&lt;/p&gt;
+
+&lt;p&gt;1.C++支持函数重载，C不支持。底层用了namemangling技术，通过编译器把函数名字改掉，每个方法名不一样。不同编译器有不同的生成规则。&lt;/p&gt;
+
+&lt;p&gt;2.extern “C”:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;被extern “C” 修饰的代码会按照C语言的方式去编译。&lt;/p&gt;
+
+    &lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  	&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;func()&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果函数同时有声明和实现，要让函数声明被extern “C” 修饰，函数的实现可以不修饰。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;假如有两个函数是通过.c（C语言）的方式进行实现的，那么在cpp的文件中，假如想使用这两个函数的话，不仅要声明，并且需要的在声明外要用 extern “C”  修饰。告诉编译器，这两个方法是用C语言来实现的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当然也可以这么写&lt;/p&gt;
+
+    &lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  	&lt;span class=&quot;cp&quot;&gt;#include &quot;math.h&quot;//include的作用:把math.h的内容原封不动的拷贝一份。
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;那么一个函数声明既要给C调用又要给C++调用怎么办呢？用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__cplusplus&lt;/code&gt;宏来判断你是否在C++的环境&lt;/p&gt;
+
+    &lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;cp&quot;&gt;#ifdef __cplusplus
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#endif
+&lt;/span&gt;    
+  &lt;span class=&quot;c1&quot;&gt;//这里是是你的声明或者代码,xxx&lt;/span&gt;
+    
+&lt;span class=&quot;cp&quot;&gt;#ifdef __cplusplus 
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#endif
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;3.防止重复include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;基于include只是执行了copy操作，所以include多次在语法上都没啥问题，但是代码量会增多，因此为了防止多次include&lt;/p&gt;
+
+    &lt;p&gt;可以用以下代码:首次未定义才进入声明逻辑。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;cp&quot;&gt;#ifndef ABC
+#define ABC
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;xxx&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;或者可以用编译器的特性&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; #pragma once &lt;/code&gt;来指名头文件只包含一次。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;两者区别:第一种不受编译器的任何限制，是标准语法。第二种老编译器不支持，兼容性不够，只针对整个文件。&lt;/p&gt;
+
+&lt;p&gt;4.inline内联函数:本质把方法替换成具体实现，可以减少函数调用的开销，会增大代码体积会。但inline只是仅仅是建议编译器进行替换，有时候声明了也不一定起作用，比如:递归。递归是无法内联的。&lt;/p&gt;
+
+&lt;p&gt;内敛函数和宏都可以减少函数的开销，对比宏，内敛函数有函数的特性，有代码提示。&lt;/p&gt;
+
+&lt;p&gt;5.const:被修饰的变量不可修改&lt;/p&gt;
+
+&lt;p&gt;如果修饰的是类或者结构体，那么其中的成员也不可更改。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;const修饰右边的东西&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//int * 是一个int指针 p是具体的值&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//修改p指向的具体值&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//修改p的值&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// p1是常量，*p1是常量，所以不能改年龄&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 和p1没区别&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//p3是常量，*p3不是，因此可以年龄。&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//两个都不能改&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//两个都不能改&lt;/span&gt;
+ 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;6.引用&lt;/p&gt;
+
+&lt;p&gt;在C++ 中，引用可以起到跟指针类似的功能，但指针可以修改，引用必须初始化，一旦指向了某个变量，就不可以再改变。&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;refAge&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;价值:比指针更安全。因为指针在中途可以修改指向，引用不能。&lt;/p&gt;
+
+&lt;p&gt;本质:引用是弱化了的指针。本质是指针&lt;/p&gt;
+
+&lt;p&gt;7.this&lt;/p&gt;
+
+&lt;p&gt;通常一个对象的成员变量是在对象当中的，而函数是放在代码段的，为了在函数体内用this能访问到对象本身，这里有个一个隐式参数，把对象地址传入函数体中，然后将对象地址给this进行赋值&lt;/p&gt;
+
+&lt;p&gt;8.堆的申请和释放&lt;/p&gt;
+
+&lt;p&gt;new和delete或者new[]和delete[]必须成对出现&lt;/p&gt;
+
+&lt;div class=&quot;language-c++ highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//申请连续的4个字节、*p指向第一个。char类型的数组&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;11&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//给第一个字节赋值&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;12&quot;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//给第二个字节赋值&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;memset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//p的4个字节每一个字节都是1&lt;/span&gt;
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;9.析构函数&lt;/p&gt;
+
+&lt;p&gt;对象销毁时，进行调用，通过malloc分配的对象free时不会调用析构函数，声明为pulic才能被外界正常使用。&lt;/p&gt;
+
+&lt;p&gt;构造方法的顺序和析构的顺序相反。&lt;/p&gt;
+
+&lt;p&gt;构造函数: 父类构造-&amp;gt;子类构造&lt;/p&gt;
+
+&lt;p&gt;析构函数: 子类析构-&amp;gt;父类析构&lt;/p&gt;
+
+&lt;p&gt;10.多态&lt;/p&gt;
+
+&lt;p&gt;定义:同一操作作用于不同的对象，可以有不同的解释，产生不同的执行结果。&lt;/p&gt;
+
+&lt;p&gt;方法的调用，默认看指针类型进行操作，不看实际的对象类型是什么。&lt;/p&gt;
+
+&lt;p&gt;很多语言默认支持多态，C++要实现多态，需要用到虚函数。&lt;/p&gt;
+
+&lt;p&gt;11.虚函数&lt;/p&gt;
+
+&lt;p&gt;定义:被virtual修饰的成员函数&lt;/p&gt;
+
+&lt;p&gt;只要在父类中声明为虚函数，子类中重写的函数也自动变成虚函数（子类可以省略virtual关键字）&lt;/p&gt;
+
+&lt;p&gt;1.有虚函数存在一个类顶部会多4个字节，这个4个字节存放的是虚表（虚函数表）的地址，虚表里面有每个虚函数的方法地址。&lt;/p&gt;
+
+&lt;p&gt;2.所有对象共用一张虚表。（如果是多继承就多张虚表）&lt;/p&gt;
+
+&lt;p&gt;3.因此如果父类指针指向子类对象，析构函数也应该定义为虚函数。否则释放时无法调用子类的虚函数。&lt;/p&gt;
+
+&lt;p&gt;12.模版&lt;/p&gt;
+
+&lt;p&gt;模版的本质类似范型，编译器会为多类型的入参生成多个类型的函数。&lt;/p&gt;
+
+&lt;p&gt;13.类型转换&lt;/p&gt;
+
+&lt;p&gt;static_cast:普通转换，不支持交叉转换。&lt;/p&gt;
+
+&lt;p&gt;dynamic_cast:支持交叉转换，会做安全计算。&lt;/p&gt;
+
+&lt;p&gt;reinterpret_cast:简简单单的二进制复制。&lt;/p&gt;
+
+&lt;p&gt;const_cast:把const转换成非const。&lt;/p&gt;
+
+&lt;p&gt;14.nullptr可以解决NULL的二义性（既代表0又代表空指针）&lt;/p&gt;
+
+&lt;p&gt;15.智能指针&lt;/p&gt;
+
+&lt;p&gt;传统指针存在的问题:&lt;/p&gt;
+
+&lt;p&gt;1.需要手动管理内存。&lt;/p&gt;
+
+&lt;p&gt;2.容易发生内存泄漏。&lt;/p&gt;
+
+&lt;p&gt;3.释放之后产生野指针。&lt;/p&gt;
+
+&lt;p&gt;智能指针可以解决这些问题。&lt;/p&gt;
+
+&lt;p&gt;实现原理类似于装箱和拆箱，用一个内部私有指针保存对象。在释放时，自动释放私有的内部指针。&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 09 Jun 2021 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/06/09/CPP%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/06/09/CPP%E8%AF%AD%E6%B3%95%E7%AC%94%E8%AE%B0/</guid>
+        
+        <category>C++</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>编译原理（一）</title>
+        <description>&lt;p&gt;最近在看基于DSL的热更新框架，瞬间对编译器原理产生了浓厚的兴趣。百度、知乎了很久，给自己定了一套学习路径(🐶)。龙书，虎书，鲸书这些是必看的，但是书还在路上。《Engineering a Compiler》和《游戏脚本高级编程》看起来口碑也不错。不过我的入门，从一本叫《两周自制脚本语言》开始（以下简称《两周》）。希望这个主题会有第二篇、第三篇….吧。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x01前言&quot;&gt;0x01.前言&lt;/h2&gt;
+
+&lt;p&gt;在计算机的世界里，计算机的底层执行逻辑一定是通过二进制的命令结合硬件电路实现的。硬件看不懂我们的代码，它们只知道把高电压当成1，低电压当成0，执行过程就是一次次放电过程。所以程序本质上是一串很长很长的的二进制数字，由于不易阅读，人们常通过汇编语言程序来表达这个巨大的数字。程序只有载入内存后才能通过硬件执行。因此，用户在实际使用的时候，必须先通过软件从磁盘文件中读取机器语言程序，再将复制到内存中，这类程序称不上时语言处理器，通常称为操作系统。&lt;/p&gt;
+
+&lt;p&gt;而计算机是如何将高级语言变成机器语言的呢？这里就需要用到语言处理器，其实语言处理器在我们的工作中时时刻刻都在接触。这之中大致分两种:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;编译器：将某种语言写成的程序转换成另一种语言的程序。通常会将源程序转化为机器语言程序。编译器转化程序的行为称为编译。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;解释器：根据程序中的算法执行运算。简单来讲，它时一种用于执行程序的软件。如果执行的程序由虚拟机器语言或类似于机器语言的程序设计语言写成，这种软件也能称为虚拟机，例如JS，Python等脚本语言。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Java语言会特殊一些，首先会通过编译器把源代码转化成Java字节码，并将这种虚拟的机器语言保存在文件中。之后,Java虚拟机的解释器将执行这些代码。大多数Java虚拟机为了提高性能，会在执行过程中通过编译器将一部分Java字节码直接转化为机器代码使用，执行过程中进行搞得机器语言转化称为动态编译或JIT编译，转化后得到的机器语言将被载入内存，由硬件执行，无需使用解释器。&lt;/p&gt;
+
+&lt;p&gt;过去人们提到编译器时，首先会联想编译过程非常耗时。不过由于编译后实际执行的是机器语言，因此执行速度很快。而对于解释器，人们通常认为它会在程序输入的同时立即执行，执行速度较慢。这就是两者的基本区别。现代的解释器内部常采用各种类型的编译器，已经越来越没必要将解释器与编译器区分看待。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-dd506a10bd81b27b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;编译的大致过程&quot; title=&quot;编译的大致过程&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;0x02词法分析&quot;&gt;0x02.词法分析&lt;/h2&gt;
+
+&lt;p&gt;语言处理器的第一个组成部分是词法分析。程序的源代码本质只是一长串字符串，这样的字符串很难处理，语言处理器通常会首先将字符串中的字符以单词为单位分组，切割成多个子字符串。这就是词法分析&lt;/p&gt;
+
+&lt;h3 id=&quot;token对象&quot;&gt;token对象&lt;/h3&gt;
+
+&lt;p&gt;下面是某个程序中的一行代码&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;while i &amp;lt; 10 {
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;词法分析会把它拆分为下面这样的字符串&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&quot;while&quot; &quot;i&quot; &quot;&amp;lt;&quot; &quot;10&quot; &quot;{&quot;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这句代码被分割为了5个字符串。通常把词法分析的结果称为单词（token），当然可能你的换行会变成一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;\n&quot;&lt;/code&gt;的token，注释标志也可能会变成一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;/*&quot;&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;*/&quot;&lt;/code&gt; 两个token，这都是有可能的，具体看编译器是如何工作的。当然具体是怎么切的，《两周》这本书用的是正则匹配:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[0-9]+&lt;/code&gt;来匹配整型。&lt;/li&gt;
+  &lt;li&gt;用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[A-Z_a-z][A-Z_a-z0-9]*&lt;/code&gt;(以字母、下划线开头，之后仅包含有字母、数字、下划线)来匹配标识符，（是不是很像我们平时定义变量?，不可以用数字开头）&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;执行词法分析时，语言处理器会逐行读取源代码，从各行开头起检查内容是否与该正则表达式匹配，并在检查完后获取与正则表达式括号内的模式相匹配的字符串。&lt;/p&gt;
+
+&lt;p&gt;在这一步中，空格、换行、注释这些都会被分析器所忽略。编译器会事先获知之后取得的单词，一边获取一边构造抽象语法树，在中途发现构造有误时，需要退回若干单词，重新构造语法树，称之为&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;回溯&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x03语法分析ast抽象语法树&quot;&gt;0x03.语法分析/AST(抽象语法树)&lt;/h2&gt;
+
+&lt;p&gt;语言处理器在词法分析阶段将程序分割为单词后，将开始构造抽象语法树。抽象语法树（AST，Abstract Syntax Tree）是一种用于表示程序结构的树形结构。语法分析的主要任务是分析单词之间的关系，如判断哪些单词属于同一个表达式或语句，以及处理左右括号（单词）的配对等问题。这一阶段还会检查程序中是否含有语法错误。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;13 + x * 2
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;我们对上面这条语句进行词法分析。我们通过上面的分析可以得出，编译器大致会分割成 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;13&lt;/code&gt; 、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; +&lt;/code&gt; 、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; x&lt;/code&gt; 、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; *&lt;/code&gt; 、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2&lt;/code&gt;，这几个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;然后我们将这些&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;进行重新排列，变成一个抽象语法树，每个叶节点存储着具体的值和值的类型。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-60b4d19edf3a6cb3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;那么像&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;+&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*&lt;/code&gt;，在进行语法树构建的过程中，符号其实是有&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;优先级&lt;/code&gt;以及&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;左右结合顺序&lt;/code&gt;的，后面会提到。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x04bnf&quot;&gt;0x04.BNF&lt;/h2&gt;
+
+&lt;p&gt;什么是BNF？总的来说BNF是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;一个描述语法规则的语言&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;初次理解BNF会觉得很难懂，至少我是理解了好久。如果看文字实在太绕，建议看视频，https://www.bilibili.com/video/BV1Us411h72K?from=search&amp;amp;seid=14895223797156770591 我是看了这个视频之后开窍了（我居然可以在bilibli学技术）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;BNF中常用的元字符及其表示的意义如下：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;在双引号中的字 &quot;word&quot; 代表着这些字符本身。而double_quote用来代表双引号；
+在双引号外的字（有可能有下划线）代表着语法部分；
+尖括号 &amp;lt; &amp;gt; 内包含的为必选项；
+方括号 [ ] 内包含的为可选项；
+大括号 { } 内包含的为可重复0至无数次的项；
+圆括号 ( ) 内包含的所有项为一组，用来控制表达式的优先级；
+竖线 | 表示在其左右两边任选一项，相当于&quot;OR&quot;的意思；
+::= 是“被定义为”的意思；
+...  表示术语符号；
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;理解了上面这些符号的规则，可以来看看书中对自制语言的规则描述:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;primary ::=  &quot;(&quot; expr &quot;)&quot; | NUMBER | IDENTIFIER | STRING
+factor ::=  &quot;-&quot; primary | primary
+expr ::= factor { OP factor }
+block ::=  &quot;{&quot; [ statement ] { (&quot;;&quot; | EOL) [ statement ]} &quot;}&quot;
+simple ::=  expr
+statement ::= &quot;if&quot; expr block [ &quot;else&quot; block ] | &quot;while&quot; expr block | simple
+program ::=  [ statement ] (&quot;;&quot; | EOL)
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;非终结符factor（因子）或表示一个primary，或表示primary之前再添加一个-号的组合&lt;/p&gt;
+
+&lt;p&gt;expr（表达式）用于表示两个factor之间夹有一个双目运算符的组合&lt;/p&gt;
+
+&lt;p&gt;block（代码块）指的是由&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{&lt;/code&gt;括起来的statement（语句）序列&lt;/p&gt;
+
+&lt;p&gt;statement之间需要用分号或换行符（EOL）分隔。由于Stone 语言支持空语句，因此规则中的statement两侧写有中括号[]。可以看到，它的结构大致与expr类似。它们都由其他的非终结符（statement或factor）与一些用于分隔的符号组合而成&lt;/p&gt;
+
+&lt;p&gt;statement可以是if语句、while语句或仅仅是简单表达式语句（simp1e）。简单表达式语句是仅由表达式（expr）构成的语句。&lt;/p&gt;
+
+&lt;p&gt;最后的program（程序）是一个非终结符，它可以包含分号或换行符，用于表示一句完整的语句。其中，statement可以省略，因此program还能用来表示空行。代码块中最后一句能够省略句尾分号与换行符。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;想要彻底理解BNF，递归的思想是必不可少的&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;假如以上BNF规定了语言语法的时候，在进行抽象语法树组合的时候，如果不符合以上制定的这些规则时，编译器就会抛出异常。&lt;/p&gt;
+
+&lt;p&gt;例如:最后声明的program（程序），你只能用分号或者换行符作为结束符，你想用用句号（。）作为结束符，是不被允许的。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x04解释器执行&quot;&gt;0x04.解释器执行&lt;/h2&gt;
+
+&lt;p&gt;语法分析将从词法分析器逐一读取非终结符program。即，以语句为单位读取单词，并进行语法分析，执行语法分析后得到的抽象语法树。只要通过语法分析得到抽象语法树，剩下的就简单了，只要从根结点开始遍历至叶节点，并计算各节点的内容即可，这就是解释器的基本实现原理。&lt;/p&gt;
+
+&lt;p&gt;要根据得到的抽象语法树来执行程序，各个语法树节点对象的类都需要具备eval方法。eval是evaluate（求值）的缩写。eval方法将计算与以该节点为根的子树对应的语句、表达式及子表达式，并返回执行结果。一直执行，执行到根节点为止。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-4b57eb08639b8933.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;看虚线方向就是执行方向&quot; title=&quot;看虚线方向就是执行方向&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;其实这同样是一种递归过程&lt;/code&gt;，&lt;/p&gt;
+
+&lt;h2 id=&quot;0x05编译器&quot;&gt;0x05.编译器&lt;/h2&gt;
+
+&lt;p&gt;在使用中间代码解释器时，我们要事先将抽象语法树转换为中间代码。简单来说，中间代码是一种虚拟的机器语言，因此，中间代码的转换方法，其实与编译器将抽象语法树转换为真正的机器语言时采用的方法大体相同。&lt;/p&gt;
+
+&lt;h4 id=&quot;中间代码与机器语言&quot;&gt;中间代码与机器语言&lt;/h4&gt;
+
+&lt;p&gt;之间利用抽象语法树，语言处理器需要在节点之间往返操作，这是一件费时的工作。因此，如果语言处理器能够实现计算遍历顺序，并以此重新排列节点，执行开销就可能有所降低&lt;/p&gt;
+
+&lt;p&gt;通常，语言处理器不会直接将重新排列的抽象语法树节点作为中间代码使用。如果直接保存抽象语法树的节点，多余的无用信息是一种空间上的浪费，因此，我们需要设计一种虚拟的机器语言，并将各个节点转换为与该节点运算逻辑对应的机器语言。大多数语言处理器使用的中间语言都是这种转换后的代码（见下图）&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-b409299e7b66b062.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;虚拟机由若干个通用寄存器与内存组成。内存分为四个区域，分别是栈（stack）区、堆（heap）区、程序代码区与文字常量区。虚拟机器语言保存于程序代码区，字符串字面量保存干文字常量区。&lt;/p&gt;
+
+&lt;p&gt;本书作者自己实现了一个自制的虚拟机，在程序启动过程中同时启动虚拟机，对于抽象语法树的操作不再是简单的执行，而是首先将语言转为虚拟机语言，再通过汇编执行函数的思路进行执行。不过本书中的程序为了演示虚拟机的工作原理并没有给程序性能带来提升，因为自制的语言是程序启动过程中进行编译，执行。不如直接执行抽象语法树来的直接。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x06总结&quot;&gt;0x06.总结&lt;/h2&gt;
+
+&lt;p&gt;其实书中的细节还有很多，作者对自制的语言也加入很多功能，比如函数，静态变量、闭包等等。在实现局部和全部变量时，居然讨巧的用了一个hashmap + namespace来实现，来确保变量的作用域，这真的非常有意思。&lt;/p&gt;
+
+&lt;p&gt;看了这本书，算是对编译原理有一个入门级的认识吧， 取名（1），希望鞭策自己这个主题会有第二篇、第三篇….吧。&lt;/p&gt;
+
+&lt;p&gt;众所周知，目前程序的编译器基本都是C++实现的，但是第一个C++程序又是谁给编译的呢？都知道蛋是鸡生的，那么第一只鸡是哪来的呢？&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;所谓C语言编译器，就是把编程得到的文件，比方.c,.h的文件，进行读取，并对内容进行剖析，按照C语言的规则，将其转换成体系能够履行的二进制文件。
+其本质在于对文件的读入，剖析，及处理。这些操作，C言语都是能够完成的。所以用C言语来做C言语的编译器是彻底可行的。
+可是，历史上的第一个C言语编译器，必定不是C言语写的，因为在没有编译器时，无法把C言语转换成可履行文件。
+只需有了第一版其它言语的编译器，就能够用C言语写编译器了。事实上，现在大多数的C言语编译器，都是用C言语写的。
+首要你要理解编译的意思，它是指把高档言语翻译成计算机 能读懂的低级言语（二进制代码），这样计算机才会履行你 的指令，
+编译器就相当于一个翻译，在翻译的过程中还会检 查你语法上有没有错误 C言语编译器自然是把用C言语写的程序翻译成二进制代码咯。
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;0x07参考&quot;&gt;0x07.参考&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://pan.baidu.com/s/1Bm5n8qovMrRMxE0MRZMGKw&quot;&gt;两周自制脚本语言&lt;/a&gt;/提取码: t8qm&lt;/p&gt;
+
+&lt;p&gt;https://github.com/wmathor/Stone-language&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.zhihu.com/question/30023409&quot;&gt;世界上第一个编译器是怎么来的？&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.bilibili.com/video/BV1Us411h72K?from=search&amp;amp;seid=14895223797156770591&quot;&gt;编程范式02BNF&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 09 May 2021 14:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/05/09/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/05/09/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86-%E4%B8%80/</guid>
+        
+        <category>编译原理</category>
         
         
       </item>
