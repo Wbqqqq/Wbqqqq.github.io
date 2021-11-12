@@ -1,12 +1,9 @@
-<!-- ---
+---
 layout: page
 title: "About"
-description: "《你是我的梦想》"
+description: "一个平凡的打工人"
 header-img: "img/about-bg.jpg"
-multilingual: true
 ---
-
-{% include multilingual-sel.html %}
 
 <!-- Chinese Version -->
 <div class="zh post-container">
@@ -14,11 +11,7 @@ multilingual: true
     {{ about_zh | markdownify }}
 </div>
 
-<!-- English Version -->
-<div class="en post-container">
-    {% capture about_en %}{% include about/en.md %}{% endcapture %}
-    {{ about_en | markdownify }}
-</div>
+
 
 
 {% if site.disqus_username %}
@@ -44,4 +37,4 @@ multilingual: true
     })();
 </script>
 <!-- disqus 公共JS代码 end -->
-{% endif %} -->
+{% endif %}
