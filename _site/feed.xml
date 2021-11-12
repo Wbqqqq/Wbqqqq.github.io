@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 12 Nov 2021 15:39:58 +0800</pubDate>
-    <lastBuildDate>Fri, 12 Nov 2021 15:39:58 +0800</lastBuildDate>
+    <pubDate>Fri, 12 Nov 2021 16:48:29 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Nov 2021 16:48:29 +0800</lastBuildDate>
     <generator>Jekyll v4.2.1</generator>
     
       <item>
@@ -95,44 +95,444 @@ then deselect Run &amp;gt; Options &amp;gt; Queue Debugging &amp;gt; “Enable b
       </item>
     
       <item>
-        <title>Peter John Landin</title>
-        <description>&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Peter_Landin&quot;&gt;wiki&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%BD%BC%E5%BE%97%C2%B7%E5%85%B0%E4%B8%81&quot;&gt;维基&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
+        <title>如何设计一个好的WebView容器</title>
+        <description>&lt;h3 id=&quot;前言&quot;&gt;前言&lt;/h3&gt;
 
-&lt;p&gt;I was long curious about how does λ calculus become the foundation of formalizaing programming languages. It’s strange that I haven’t look up the answer until today: It’s invented so early by Alonzo Church (whom I will write another post for) as an alternative mathematic foundation in 1930s and its relation with programming language was re-discoverred in 1960s.&lt;/p&gt;
+&lt;p&gt;众所周知，iOS的网页组件很封闭，基本就是基于WKWebview修修改改。看起来能做的不多，但是一个好的webview容器，其实能做的事情还有很多。今天想聊一下，一个好的webview的容器，除了自己本身的功能，还需要哪些设计。&lt;/p&gt;
 
-&lt;p&gt;From the “Lambda calculus and programming languages” section of wikipedia page:&lt;/p&gt;
+&lt;h3 id=&quot;1jsbridge的设计&quot;&gt;1.jsbridge的设计&lt;/h3&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;As pointed out by Peter Landin’s 1965 paper “A Correspondence between ALGOL 60 and Church’s Lambda-notation”&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;wk很容易就可以使用jsbridge，只要在&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;configuration.userContentController&lt;/code&gt;注入调用名&lt;/p&gt;
 
-&lt;p&gt;I found this name quite familiar since I read his paper “The mechanical evaluation of expressions” before, in which he introduced the first abstract machine for functional programming language, namely &lt;a href=&quot;https://en.wikipedia.org/wiki/SECD_machine&quot;&gt;SECD machine&lt;/a&gt;. This paper also define the term &lt;a href=&quot;https://en.wikipedia.org/wiki/Closure_(computer_programming)&quot;&gt;Closure&lt;/a&gt; which becomes a prevalent notion in computer programming nowadays.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;- (void)addScriptMessageHandler:(id &amp;lt;WKScriptMessageHandler&amp;gt;)scriptMessageHandler name:(NSString *)name;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Besides of that, his contributions also include:&lt;/p&gt;
+&lt;p&gt;在js中附上刚面的name就可以调用了，非常方便&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;on ALGO definition&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/ISWIM&quot;&gt;ISWIM&lt;/a&gt; programming language&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Off-side_rule&quot;&gt;off-side rule&lt;/a&gt;, known as “indentation-based” syntax nowadays, popularized by Miranda, Haskell, Python, etc.&lt;/li&gt;
-  &lt;li&gt;coin the term &lt;a href=&quot;https://en.wikipedia.org/wiki/Syntactic_sugar&quot;&gt;syntactic sugar&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;window.webkit.messageHandlers.name.postMessage()
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;He was much influenced by a study of McCarthy’s LISP and taught &lt;a href=&quot;https://en.wikipedia.org/wiki/Tony_Hoare&quot;&gt;Tony Hoare&lt;/a&gt; ALGO with Peter Naur and Edsger W. Dijkstra. (Oh yes, definitely 4 more people to write).&lt;/p&gt;
+&lt;p&gt;同时也可以在想要的时间点（一般在初始过程）注入JS。&lt;/p&gt;
 
-&lt;p&gt;I have just download his old, influential paper “The next 700 programming languages”. 
-I am sure it will be an enjoyable read.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;
+[userContentController addUserScript:[[WKUserScript alloc] initWithSource:script
+																		injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+																	 forMainFrameOnly:YES]];
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;健全的容器，需要健全的bridge方法，比如容器的版本，基础的设备信息等等。业务功能比如照片选择器、图片浏览器、原生扫码页、蓝牙等等，都可以按需加入。当然光提供bridge，几个还好，一旦多起来，他们就需要体系，接收方法需要统一入口，交由容器解析，有一套健全的派发逻辑，因为native的方法代码可能散落在工程各处。返回结果需要统一出口，由容器统一格式返回。&lt;/p&gt;
+
+&lt;p&gt;而在js端调用的过程中需要规范调用的格式，入参的规则，成功和失败的回调规则。当native执行完毕之后，需要告知js侧结果。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-b6d429e033c16206.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image-20210903110547976.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2同层渲染&quot;&gt;2.同层渲染&lt;/h3&gt;
+
+&lt;p&gt;让网页拥有原生组件的能力，这是近两年比较火的同层渲染技术。&lt;/p&gt;
+
+&lt;p&gt;市面上的实现原理也已经比较成熟，具体实现可以看微信这篇&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/article/doc/000c4e433707c072c1793e56f5c813&quot;&gt;小程序同层渲染原理剖析&lt;/a&gt;写的非常详细。&lt;/p&gt;
+
+&lt;p&gt;github上也有相关的源码级别实现。iOS的做法来说相对来说“trick”一些，而android在实现上会更加复杂一点。&lt;/p&gt;
+
+&lt;h3 id=&quot;3离线加载&quot;&gt;3.离线加载&lt;/h3&gt;
+
+&lt;p&gt;故名思议通过加载本地的资源进行网页的渲染，达到网页秒开的效果。&lt;/p&gt;
+
+&lt;p&gt;在这其中，资源的动态的下发是比较重要的一环，下发的时间点，如何正确的命中用户都是需要做的课题。后续数据的追溯，命中情况等都需要监控。&lt;/p&gt;
+
+&lt;p&gt;当然，资源的管理是一方面，如果正确识别需要加载的URL绕过网络去加载本地的资源的这个过程同样需要精细化设计。WKWebView的请求拦截，网上基本说烂了，这篇文章基本是结贴&lt;a href=&quot;https://juejin.cn/post/6922625242796032007&quot;&gt;WKWebView 请求拦截探索与实践&lt;/a&gt;。市面上思路都差不多，”WKWebView不支持http、https拦截”、”Body丢失”、”Cookie同步”这些问题只要花时间都是有解的。&lt;/p&gt;
+
+&lt;p&gt;补充：关于body丢失的问题，不管是用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSURLProtocol&lt;/code&gt;或者&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WKURLSchemeHandler&lt;/code&gt;，基本都是需要js端配合hook &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;XMLHTTPRequest&lt;/code&gt;，只需在容器启动从native注入hook的js，对前端同学同样也是透明的，没有负担。&lt;/p&gt;
+
+&lt;h3 id=&quot;4性能稳定监控&quot;&gt;4.性能稳定监控&lt;/h3&gt;
+
+&lt;p&gt;基本的性能监控不能少，统计网页从打开到显示的时间，网页加载完毕时候统计是否是白屏等等。&lt;/p&gt;
+
+&lt;p&gt;也可以通过一些网页的属性传给网页进行统计比如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;window.performance&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;补充：白屏的几种判别方法:1.截图像素点的判断。2.遍历dom节点查看是否有正常子节点。&lt;/p&gt;
+
+&lt;h3 id=&quot;5预热&quot;&gt;5.预热&lt;/h3&gt;
+
+&lt;p&gt;今日头条的详情页部分是通过WKWebView进行渲染的，好的用户体验的一个很重要的点就是wk的预热和复用，详见参考中的链接。&lt;/p&gt;
+
+&lt;h3 id=&quot;6其他&quot;&gt;6.其他&lt;/h3&gt;
+
+&lt;p&gt;大的块暂时能想到的就这么多，剩下的定制化功能其实还有很多，开发者可以不断地往上垒，治理好bridge是关键，比如容器可以支持查看js日志，并且在线调试，增加一些对navibar，navibaritem，横屏，手势等进行设置的功能，又比如将网页一些耗时任务交给native处理，在体验上也会有不错的效果。&lt;/p&gt;
+
+&lt;h3 id=&quot;总结&quot;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;相比于flutter，我其实更崇尚基于native + h5的这种hybrid开发，随着h5的体验越来越好，其实这种开发方式已经是目前主流的开发模式了，不管是从效率、易用、容错等方面都是一个相当不错的选择。&lt;/p&gt;
+
+&lt;h3 id=&quot;参考&quot;&gt;参考&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://mp.weixin.qq.com/s/Xqr6rQBbx7XPoBESEFuXJw&quot;&gt;今日头条品质优化 - 图文详情页秒开实践&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://developers.weixin.qq.com/community/develop/article/doc/000c4e433707c072c1793e56f5c813&quot;&gt;小程序同层渲染原理剖析&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://juejin.cn/post/6922625242796032007&quot;&gt;WKWebView 请求拦截探索与实践&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Naituw/WBWebViewConsole&quot;&gt;WBWebViewConsole&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 06 Sep 2021 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/09/06/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%9A%84webview%E5%AE%B9%E5%99%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/09/06/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%9A%84webview%E5%AE%B9%E5%99%A8/</guid>
+        
+        <category>WKWebView</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>聊聊热更新</title>
+        <description>&lt;p&gt;想写这篇文章挺久了，今天我们来聊一聊热更新。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x01前言&quot;&gt;0x01.前言&lt;/h2&gt;
+
+&lt;p&gt;国内开发者对于热更新不可谓不热衷，前仆后继地发明一个又一个新思路，我自己也是对热更新特别感兴趣，尤其对iOS来说，这更是一片敏感的灰色地带，自从&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jspatch&lt;/code&gt;被苹果警告之后，各家公司的热更需求依然没有减弱，因此这个话题变得相当微妙，各家公司都有一些自己的方案，并且不再开源，因为开源意味着会像&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jspatch&lt;/code&gt;一样变成把子，业界最著名的&lt;a href=&quot;https://github.com/DynamicCocoa/DynamicCocoa&quot;&gt;DynamicCocoa&lt;/a&gt;就是一个非常典型的例子，时至今日，再去打开这个仓库的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;issue&lt;/code&gt;依然会让你捧腹大笑。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x02演进过程&quot;&gt;0x02.演进过程&lt;/h2&gt;
+
+&lt;p&gt;其实一路走来我对热更新演进过程的总结就是两个字 —— &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;内卷&lt;/code&gt;，虽然这两个戏谑的字不是那么合适，但事实就是如此，热更的方案变得更加多元化，防审核能力也变得更强。开发大佬们也已经不再局限于现成的脚本语言，转而自己去开发新的脚本语言。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-faa88b51c33c7d02.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;演进过程&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;众所周知一个apple应用是静态编译成二进制文件的(AOT)，在线上去修改此类文件是不现实的，因此就需要用到脚本语言（JIT）+  动态化语言的能力，这就是热更的本质。几乎所有热更的流程基本都符合下面这张流程图的逻辑（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ReactNative &lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Weex&lt;/code&gt;等跨平台方案今天不在我们的讨论范围内，他们确实有具备热更的能力，但我认为他们不够&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trick&lt;/code&gt;。时至今日，此类的跨平台框架基本已经被apple认可，因为他们已经是非常成熟的框架，风险也相对可控）&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-6ee304457bcef8e8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;执行流程&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来，我会拿两个有代表性的方案，进行一些技术细节的阐述。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x03-jspatch&quot;&gt;0x03. &lt;a href=&quot;https://github.com/bang590/JSPatch&quot;&gt;JSPatch&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;第一个例子拿&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;我觉得是毫无疑问的，国内目前最有影响力的框架我依然觉得是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;，作者也一直是我的偶像，blog的文章我也经常拜读。作者将&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JS&lt;/code&gt;这种现成的语言作为热更脚本，再加上平台提供的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JScontext&lt;/code&gt;能够快速地进行与native的通信。站在巨人的肩膀上决定了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;从开始就是一个轻量高性能的热更框架。下面来简单说说&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;的执行逻辑和原理。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x031jscontext&quot;&gt;0x031.JSContext&lt;/h4&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;， 一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JS&lt;/code&gt;执行环境的对象，在一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;对象创建时，会在其中内置一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSVirtualMachine(JS虚拟机)&lt;/code&gt;,你可以非常方便快速地在native执行一段JS或者进行两种语言的互通，在这之中你不需要依赖任何WebView（就像node.js一样提供一个node环境）。就像下面这样:&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    &lt;span class=&quot;n&quot;&gt;JSContext&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;JSContext&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;evaluateScript&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;var name = &apos;wbq&apos;; var age = &apos;18&apos;; function addFunc(value1, value2){ return value1 + value2};&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    
+    &lt;span class=&quot;n&quot;&gt;JSValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;addFunc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;callWithArguments&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;323&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]];&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%@&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;每个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;对象默认是隔离的，也就是他们都是单独的环境，彼此之前不能传递信息，当然你也可以通过:&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;- (instancetype)initWithVirtualMachine:(JSVirtualMachine *)virtualMachine;&lt;/code&gt;来创建多个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;对象来共享一个虚拟机，这里不展开。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x032引擎启动&quot;&gt;0x032.引擎启动&lt;/h4&gt;
+
+&lt;p&gt;引擎启动之后，框架会通过上述的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;执行一个叫作&lt;a href=&quot;https://github.com/bang590/JSPatch/blob/master/JSPatch/JSPatch.js&quot;&gt;JSPatch.js&lt;/a&gt;的文件，这个文件是框架的重点之一，我把他归结为两个功能:1.收集并解析热更脚本的数据。2.将解析完的数据交还给Native处理。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x033解析脚本方法替换&quot;&gt;0x033.解析脚本/方法替换&lt;/h4&gt;
+
+&lt;p&gt;拉取脚本我觉得没什么好说的，下面讲讲脚本解析，挑demo中最简单的一个例子来讲&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;UIViewController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;defineClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;JPViewController&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;handleBtn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sender&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tableViewCtrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UIViewController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;alloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;navigationController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pushViewController_animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tableViewCtrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;这里为什么对&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewController&lt;/code&gt;要用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;require&lt;/code&gt;，是因为在下面的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;handleBtn&lt;/code&gt;这个方法中使用了这个类，&lt;a href=&quot;https://github.com/bang590/JSPatch/blob/master/JSPatch/JSPatch.js&quot;&gt;JSPatch.js&lt;/a&gt;中的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;require&lt;/code&gt;方法在当前全局中保存了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewContrller&lt;/code&gt;这个对象，防止在进行&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewController.alloc().init()&lt;/code&gt;方法的链式调用中不会出现&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewContrller is not defined&lt;/code&gt;的报错。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://github.com/bang590/JSPatch/blob/master/JSPatch/JSPatch.js&quot;&gt;JSPatch.js&lt;/a&gt;的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defineClass = function(declaration, properties, instMethods, clsMethods){...}&lt;/code&gt;方法传入的是类的声明，属性、实例方法、类方法。而例子中第二个参数传入是一个实例方法的map，是因为作者在其中发现第二个参数不是数组的情况下，就会把第二个参数当作实例方法往前提。之后会把解析完的脚本数据通过native早就准备好的方法&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_OC_defineClass&lt;/code&gt;，进行处理：&lt;/p&gt;
+
+    &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;_OC_defineClass&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classDeclaration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JSValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instanceMethods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JSValue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classMethods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;defineClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classDeclaration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instanceMethods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;classMethods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;其实OC的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defineClass&lt;/code&gt;方法内部的细节很多，当然本质就是进行方法替换，作者先将将方法转发的方法&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;- (void)forwardInvocation:(NSInvocation *)anInvocation&lt;/code&gt;进行了替换，再将热更脚本收集的方法全部挂到&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;替换的方法转发方法&lt;/code&gt;上(第一次会有点饶，可以多看几遍源码)，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSInvocation&lt;/code&gt;对象包含所有的方法入参和方法签名，非常适合在这里进行方法的调用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当然&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewController.alloc().init()&lt;/code&gt;类似的语句是做不到直接调用的，因为js中压根没有这些方法，作者博客也有讲到，所以另辟蹊径。在这一步，&lt;a href=&quot;https://github.com/bang590/JSPatch/blob/master/JSPatch/JSPatch.js&quot;&gt;JSPatch.js&lt;/a&gt;会通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;正则&lt;/code&gt;对热更脚本进行一轮胶水代码的添加，在解析阶段，上述这句话会变成&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIViewController.__c(&quot;alloc&quot;)().__c(&quot;init&quot;)()&lt;/code&gt;，这样通过一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;__c&lt;/code&gt;的统一的胶水函数，就能非常方便地把诸如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alloc&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;init&lt;/code&gt;方法交还给&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;native&lt;/code&gt;进行调用了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;以上就是大致的执行流程了，当前其中还有很多复杂的细节，比如返回值的处理，上面只是讲到无返回值类型最简单的一种。各种参数类型的处理，各种语法的处理比如block，结构体，用libffi处理C函数等等。&lt;/p&gt;
+
+&lt;p&gt;前段时间，在重读源码的过程中，逮住了一只野生的bang大佬，问了几个细节问题，收到了解答也是非常的开心。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-13671612c5ec6ebb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;0x34-小结&quot;&gt;0x34 小结&lt;/h4&gt;
+
+&lt;p&gt;总的来说&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;是一个非常优秀的热更框架，作者也是一步步精益求精，满足了广大开发者的各种诉求。思路和实现都非常值得阅读和学习，目前github还在维护的热更框架采用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JS&lt;/code&gt;作为脚本语言的基本都是学习了&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;思路，例如这个&lt;a href=&quot;https://github.com/yangyangFeng/TTPatch&quot;&gt;TTPatch&lt;/a&gt;（真没看出啥大区别…）。当然此类的解决方案虽然还是有过审的可能，但是大家渐渐地开始不太敢用了，毕竟被下架付出的成本远远比线上bug的成本高多了，用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JS&lt;/code&gt;和&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSContext&lt;/code&gt;进行动态化太容易被机审扫到了。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x04mango&quot;&gt;0x04.&lt;a href=&quot;https://github.com/YPLiang19/Mango&quot;&gt;Mango&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;第二个为什么选这个框架呢，因为第一次看到这个框架的时候，还是比较眼前一亮的，这个框架就是我所说的自制语言和自制编译器/解释器的代表型框架。具体可以看作者原理与使用介绍&lt;a href=&quot;https://www.jianshu.com/p/7ae91a2daead&quot;&gt;MangoFix：iOS热修复另辟蹊径&lt;/a&gt;，总的来说，开发者可以使用一种以&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.mg&lt;/code&gt;为后缀的脚本文件，文件内容类似OC的语法，所以可以很快上手，之后同样对脚本进行解析，不同于&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JSPatch&lt;/code&gt;的方法转发，Mango是直接通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libffi&lt;/code&gt;进行了方法替换。在研究框架的过程中，我发现如此优秀的轮子，网上关于的源码阅读和解释的文章缺很少，所以今天我想特别来说说。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;![img](https://upload-images.jianshu.io/upload_images/1709476-16c9960a772355e4.png?imageMogr2/auto-orient/strip&lt;/td&gt;
+      &lt;td&gt;imageView2/2/w/810/format/webp)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;原理部分，我照搬了作者的原图。接下来具体来说说技术的实现点。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x041lexyacc&quot;&gt;0x041.Lex&amp;amp;&amp;amp;Yacc&lt;/h4&gt;
+
+&lt;p&gt;作者在脚本的解析中用到了该工具，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Lex&amp;amp;&amp;amp;Yacc&lt;/code&gt;可以让你轻易的解析复杂的语言，当你需要读取一个配置文件时，或者你需要编写一个你自己使用的语言的编译器时，你不用手工写解析器，他可以直接帮你做到你想要的事。&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lex&lt;/code&gt;负责词法的分析，将脚本切割成一个个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yacc&lt;/code&gt;负责解析语法分析，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;将token&lt;/code&gt;按照你写的规则生成抽象语法树。注意 Lex 和 Yacc 都是基于正则表达，后面讲到。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x042bnf&quot;&gt;0x042.BNF&lt;/h4&gt;
+
+&lt;p&gt;什么是BNF？总的来说BNF是&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;一个描述语法规则的语言&lt;/code&gt;。具体可以我上一篇&lt;a href=&quot;https://www.jianshu.com/p/d2c2ea279053&quot;&gt;编译原理（1）&lt;/a&gt;简单地介绍了一下BNF，不是啥新东西，&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Yacc&lt;/code&gt;同样可以通过BNF提取语法规则。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x043脚本解析&quot;&gt;0x043.脚本解析&lt;/h4&gt;
+
+&lt;p&gt;掌握了以上几个知识点，去理解原理也就变得不那么难了，还是找一个最简单的例子来聊聊。&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ViewController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;UIViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sequentialStatementExample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resultView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上面是一个mg文件，可以看到和OC非常像，但是又有一些不一样。可以看到，该脚本目的是改掉原始&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ViewController&lt;/code&gt;的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sequentialStatementExample&lt;/code&gt;方法。&lt;/p&gt;
+
+&lt;p&gt;1.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Lex&lt;/code&gt; 部分:首先通过正则把关键字匹配出来，比如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ViewController&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;void&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@&lt;/code&gt;、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;1&quot;&lt;/code&gt;一个个切出来，就是上述的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;token&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;void&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;VOID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//void关键字&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;class&quot;&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CLASS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//class关键字&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Za&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Za&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z_&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf_create_identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yytext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;yylval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_retained&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IDENTIFIER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//标识符 例如ViewController、UIViewController&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;:&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;COLON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//分号&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INITIAL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; {&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;    mf_open_string_literal_buf();&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;    BEGIN STRING_LITERAL_STATE;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;} //第一次匹配到&apos;&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&apos;开始进入字符串收集状态&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STRING_LITERAL_STATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;mf_append_string_literal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yytext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//匹配换行符之外的任意字符,字符串进行拼接&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STRING_LITERAL_STATE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; {&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;	MFExpression *expression = mf_create_expression(MF_STRING_EXPRESSION);&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;	expression.cstringValue = mf_end_string_literal();&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;	yylval.expression = (__bridge_retained void *)expression;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;	BEGIN  INITIAL;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;	return STRING_LITERAL;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;} //在字符串状态匹配到&apos;&quot;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&apos;，意味字符串匹配结束，继续进入首字符匹配模式&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;....&lt;/span&gt;
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yylval&lt;/code&gt;其中保存着相关的信息，这个信息就是在词法分析文件中(lex)进行设置的，而在语法分析文件中(yacc)就直接采用了
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yytext&lt;/code&gt; 是指向所匹配的字符串的指针（以 NULL 结尾），&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yytext[0]&lt;/code&gt;就是当前首字符，而 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yyleng &lt;/code&gt;是这个字符串的长度。&lt;/p&gt;
+
+&lt;p&gt;2.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Yacc&lt;/code&gt;部分刚开始啃确实会有一点难理解，先来个简单的，如何匹配一个实例方法&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nl&quot;&gt;instance_method_definition:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;annotation_if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SUB&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;type_specifier&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;block_statement&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;MFExpression&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;annotaionIfConditionExpr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_transfer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MFExpression&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;MFTypeSpecifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returnTypeSpecifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_transfer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MFTypeSpecifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;NSArray&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;items&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_transfer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSArray&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;MFBlockBody&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_transfer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MFBlockBody&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;MFMethodDefinition&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methodDefinition&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf_create_method_definition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;annotaionIfConditionExpr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;returnTypeSpecifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+				&lt;span class=&quot;err&quot;&gt;$$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__bridge_retained&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methodDefinition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;annotation_if 可以是empty，SUB = ‘-‘， LP = ‘{‘  ，type_specifier = ‘返回类型’ ，RP = ‘}’  ，method_name = ‘函数名’ ，block_statement = ‘函数体’ ，这样就可以通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;instance_method_definition&lt;/code&gt;匹配出一个实例方法了。但真正能把上述这个简单的脚本匹配出来需要还经过层层匹配，我稍微总结了一下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;member_definition_list : member_definition | member_definition_list member_definition;
+
+member_definition : property_definition | method_definition
+
+method_definition : instance_method_definition | class_method_definition;
+ 
+instance_method_definition : annotation_if &quot;-&quot; &quot;(&quot; type_specifier &quot;)&quot; method_name block_statement
+
+type_specifier : void | BOOL | Class | id | ... 
+
+block_statement : &quot;{&quot;  statement_list  &quot;}&quot;
+
+statement_list : statement | statement_list statement
+
+statement : declaration_statement | if_statement | switch_statement | for_statement | foreach_statement | while_statement | do_while_statement | break_statement | continue_statement | return_statement | expression_statement
+			
+expression_statement : expression &quot;;&quot;
+
+expression : assign_expression
+
+assign_expression : ternary_operator_expression | primary_expression assignment_operator ternary_operator_expression
+
+ternary_operator_expression : logic_or_expression  | logic_or_expression &quot;?&quot; ternary_operator_expression &quot;:&quot; ternary_operator_expression |
+logic_or_expression  &quot;?&quot; &quot;:&quot; ternary_operator_expression
+
+logic_or_expression : logic_and_expression | logic_or_expression &quot;||&quot; logic_and_expression
+
+logic_and_expression : equality_expression | logic_and_expression &quot;&amp;amp;&amp;amp;&quot; equality_expression
+
+equality_expression : relational_expression | equality_expression &quot;==&quot; relational_expression | equality_expression &quot;!=&quot; relational_expression
+
+relational_expression: additive_expression | relational_expression &quot;&amp;lt;&quot;| &quot;&amp;lt;=&quot; | &quot;&amp;gt;&quot; | &quot;&amp;gt;=&quot;  additive_expression
+
+additive_expression : multiplication_expression | additive_expression &quot;+&quot; multiplication_expression | additive_expression &quot;-&quot; multiplication_expression
+
+multiplication_expression : unary_expression | multiplication_expression &quot;*&quot; unary_expression
+
+unary_expression : postfix_expression | &quot;!&quot; unary_expression | &quot;-&quot; unary_expression
+
+postfix_expression : primary_expression | primary_expression &quot;++&quot; | primary_expression &quot;--&quot;
+
+primary_expression : IDENTIFIER | &quot;&amp;amp;&quot; IDENTIFIER | primary_expression &quot;.&quot; IDENTIFIER | primary_expression &quot;.&quot; key_work_identifier | primary_expression &quot;.&quot; selector &quot;()&quot; ｜ primary_expression &quot;.&quot; selector &quot;(&quot; expression_list &quot;)&quot; 
+
+|  primary_expression &quot;(&quot; &quot;)&quot; |  ...
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;就一个简单的实例方法需要经过这么多规则的筛选，不得不佩服作者细腻的逻辑能力，其实这之中也有非常多的细节，你要做很多二义性的判断，各种特殊情况的处理，我觉得这个工作量绝对是不小的。&lt;/p&gt;
+
+&lt;p&gt;话说回来光匹配是不够的，在匹配过程中，还需要生成AST(抽象语法树)。比如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$1、$2&lt;/code&gt;这类就是获取匹配出来的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yylval.expression&lt;/code&gt;，数字代表顺序代表匹配的token顺序，例如上述&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MFTypeSpecifier *returnTypeSpecifier = (__bridge_transfer MFTypeSpecifier *)$4;&lt;/code&gt;就是把第四个token，方法的返回类型，用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;returnTypeSpecifier&lt;/code&gt;接收。又比如&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$$&lt;/code&gt;就代表把收集的语义封装的对象继续向上传递。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PS:我自己有个疑问，yacc在层层向上匹配的过程中，如果发现自己匹配错了会怎么样呢？是回溯吗？，还是在匹配过程中，他已经已经知道自己要走哪条路了？&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;解析完之后，会得到一个个的AST的对象保存在内存中，比如方法对象就是保存在NSMutableDictionary当中。之后通过libffi进行方法替换。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x044方法执行&quot;&gt;0x044.方法执行&lt;/h4&gt;
+
+&lt;p&gt;方法执行的逻辑也挺复杂，不断地计算AST的节点。各个语法树节点对象的类都需要具备类型（赋值、if语句、for循环、switch等等条件都会进到不一样的执行逻辑当中）和执行的表达式。eval方法将计算与以该节点为根的子树对应的语句、表达式及子表达式，并返回执行结果。一直执行，执行到根节点为止。作者在这一块可以说实现了一整个解释器/虚拟机。&lt;/p&gt;
+
+&lt;h4 id=&quot;0x045小结&quot;&gt;0x045.小结&lt;/h4&gt;
+
+&lt;p&gt;其实这个框架让我佩服的点是他完成了自制语言整个编译+解释的过程，虽不知道作者是何许人也，但是大佬的底层功力不可谓不深厚。尤其是编译原理，搞得相当的明白，我这种入门级小白只能顶礼膜拜。业界也有在大佬基础上进行更进一步探索的比如:&lt;a href=&quot;https://github.com/SilverFruity/OCRunner&quot;&gt;OCRunner&lt;/a&gt;，和该作者简单的聊了一下，作者本身只想做一个将OC语言翻译成mg文件的工具，最后干脆自己直接实现了从OC到AST的过程，我认为这个方向也很不错，毕竟开发者上手一门新的脚本语言，还是需要学习成本的。但是作者也表示，用&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Lex&amp;amp;&amp;amp;Yacc&lt;/code&gt;来作为OC的翻译工具还是有很多坑，比如识别&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*&lt;/code&gt; ——&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSString *a 和 a * b&lt;/code&gt; 具有二义性的需要特殊处理， 也处理不了头文件的展开。作者最后说如果有机会可能会直接上clang，我：…………………..&lt;/p&gt;
+
+&lt;h2 id=&quot;0x05总结&quot;&gt;0x05.总结&lt;/h2&gt;
+
+&lt;p&gt;热更经过这么多年的发展，方案五花八门，但以上讲到的两种方案是最具代表性的，只要将热更做到安全可控，我相信热更还是有未来的，篇幅有限，先到这里。你知道的越多，你不知道的越多。&lt;/p&gt;
+
+&lt;h2 id=&quot;0x06参考&quot;&gt;0x06.参考&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/bang590&quot;&gt;bang590&lt;/a&gt;/&lt;a href=&quot;https://github.com/bang590/JSPatch&quot;&gt;JSPatch&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/YPLiang19&quot;&gt;YPLiang19&lt;/a&gt;/&lt;a href=&quot;https://github.com/YPLiang19/Mango&quot;&gt;Mango&lt;/a&gt;&lt;/p&gt;
 
 </description>
-        <pubDate>Fri, 13 Sep 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/09/13/peter-john-landin/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/09/13/peter-john-landin/</guid>
+        <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/06/21/%E8%81%8A%E8%81%8A%E7%83%AD%E6%9B%B4%E6%96%B0/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/06/21/%E8%81%8A%E8%81%8A%E7%83%AD%E6%9B%B4%E6%96%B0/</guid>
         
-        <category>Xcode</category>
+        <category>热更新</category>
         
         
       </item>
