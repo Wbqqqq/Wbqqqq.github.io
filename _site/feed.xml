@@ -1,13 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>wbq</title>
-    <description>先完成，再完美</description>
+    <title>Wbq&apos;s Blog</title>
+    <description>关于程序与设计、黑客与画家 | 黄玄，Web &amp; Mobile Lover，Software Engineer，UX Designer | 这里是 @Hux黄玄 的个人博客，与你一起发现更大的世界。</description>
     <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Aug 2018 13:18:22 +0800</pubDate>
-    <lastBuildDate>Tue, 21 Aug 2018 13:18:22 +0800</lastBuildDate>
-    <generator>Jekyll v3.4.0</generator>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Fri, 12 Nov 2021 14:29:31 +0800</pubDate>
+    <lastBuildDate>Fri, 12 Nov 2021 14:29:31 +0800</lastBuildDate>
+    <generator>Jekyll v4.2.1</generator>
+    
+      <item>
+        <title>浅谈区块链（一）</title>
+        <description>&lt;p&gt;话说很早就开始玩币了，从17年开始，从来没有赚过钱，当时是在网上冲浪发现这个东西，下了个火币来玩一玩，买了500块eos，事实证明eos到现在还是那个鸟样。这几天心血来潮，想要系统性地学习一下区块链的知识，再好好去研究一下别的项目，区块链的知识量真的是太大了，先总结第一篇，方便自己后续回顾。&lt;/p&gt;
+
+&lt;h3 id=&quot;比特币的交易挖矿原理&quot;&gt;比特币的交易、挖矿原理&lt;/h3&gt;
+
+&lt;p&gt;现实生活中当A给B转钱的时候，一定会产生一条记录，不管任何的金融系统都需要记录这一条记录。但众所周知虚拟货币的第一大亮点就是去中心化，什么是去中心化？&lt;/p&gt;
+
+&lt;p&gt;在支付宝中A给B转钱，支付宝的系统会负责完成这一笔交易并且记录这一条记录，这就是中心化，中心化的特点就是A跟B的交易需要支付宝这个第三方来介入，否则这比交易将无法完成。银行转账一样的道理。&lt;/p&gt;
+
+&lt;p&gt;那么比特币是如何完成这一笔交易的，并且记账的呢？&lt;/p&gt;
+
+&lt;p&gt;这里先引出一个概念，比特币客户端本质上来说是一个应用，跑在计算机上的应用，类似于在centOS上起了一个JavaWeb程序，目前世界上有上百万台计算机运行着这个应用，就是我们俗称的矿机。&lt;/p&gt;
+
+&lt;p&gt;当A通过比特币客户端（钱包，轻应用）给B转钱，客户端会广播这条信息到全网的比特币客户端，所有的节点一起来记账，把这条记录先记录到自己的内存中，每台计算机都会把最近一段时间收到的交易进行打包形成一个区块，拼到上一次打包的区块上，类似于链表结构，形成了一个区块链。&lt;/p&gt;
+
+&lt;p&gt;1.因为记账只有唯一一台机器可以记这几分钟的账，第一个问题，那么多节点同时计算，谁说了算？&lt;/p&gt;
+
+&lt;p&gt;打包的过程是将 最近有效的交易 + 时间戳 + 随机数 通过&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sha256&lt;/code&gt;计算出一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hashcode&lt;/code&gt;，当这个值符合前几位为0的时候，这台机器就有资格进行打包，把最近这些交易进行打包记账，那么相应的，系统会给予奖励，这个奖励是打包过程中，节点自动同时会把这笔交易加入到计算当中，这就是挖矿。系统会动态地调整计算难度，确保在10分钟左右出一个块，截止到目前是必须符合前19个是0。&lt;/p&gt;
+
+&lt;p&gt;2.这么多机器，一台客户端广播得过来吗？&lt;/p&gt;
+
+&lt;p&gt;据不完全统计目前的全网节点只需要12秒就可以同步90%的节点，广播的效率相比于打包的过程还是相当快的，相比与真正耗时的是计算那个hashcode。而且不需要全节点广播，只需要广播就近几个节点，通过传递很快可以广播到全网。&lt;/p&gt;
+
+&lt;p&gt;3.关于余额的计算&lt;/p&gt;
+
+&lt;p&gt;在比特币的网络中没有余额的概念，而是通过纯计算得出。假如我想知道某个钱包的余额，只需要计算在链条上所有关该钱包的收款记录就能动态计算出我目前的余额了。每条交易的模型在BTC中称为UTXO。有一个输入一个输出。每个UTXO中输入方是花费方，输出方是消费方，每一个输出都犹如现实中的一张纸币，他只有两种状态，属于你或者不属于你。未花费就是该张纸币属于你，已花费就是该张纸币不属于你。每一个 UTXO 和纸币一样，只可能有两种状态，要么是没有被花费的，要么就是已经被花费，所有权变成了其他人或者地址，成为其他地址的 UTXO。如果A有10个BTC，转给B10个，那么就是一个UTXO。如果转5个那么就是两个UTXO，因为存在找零操作。一个UTXO是A-&amp;gt;B 5个BTC ，一个是UTXO是A-&amp;gt;A 5个BTC .&lt;/p&gt;
+
+&lt;p&gt;4.为什么说不可篡改&lt;/p&gt;
+
+&lt;p&gt;这就是公有链的价值所在，假设说中心化的金融系统是可以随意篡改的话，那么去中心化的区块链相对来说是非常安全的。首先在中心化的系统中，改一条数据神不知鬼不觉，参考蚂蚁的员工把自己的余额后面加了两个0。在区块链中，每个区块的整个所有的信息都会有个hashcode。每个块都会保存前一个块的hashcode。又因为记账是大家一起记，假设你在你的节点把其中几个块改了，庞大的系统是不认可你的，因为剩下99.9999…%的节点记是正确的数据，只有你一个是错误，你这条链是不会有人继续往下写的，这就是共识的力量。在公有链中，除非你有绝对的实力可以改掉一半以上的机器数据，当然能做到这一点的人也不屑于做修改数据来增加自己的财富。&lt;/p&gt;
+
+&lt;p&gt;5.BTC的劣势&lt;/p&gt;
+
+&lt;p&gt;一.因为由于系统设计的问题，导致BTC的交易TPS相当慢，一秒钟只能发起7笔左右的交易，这在当今这个高速的互联网是根本无法满足需求的。&lt;/p&gt;
+
+&lt;p&gt;二.由于BTC挖矿的机制是POW，所以就造成了电力和资源的浪费，多个矿池都在做同样一件事，而真正生产的价值的只有那么几台。&lt;/p&gt;
+
+&lt;h3 id=&quot;关于交易所&quot;&gt;关于交易所&lt;/h3&gt;
+
+&lt;p&gt;交易所本质是一个中心化的系统，他只有唯一一个钱包地址。所以其实在里面所有的交易，都是基于他自己的数据库，你的挂单，你的买币其实都是他数据库里的加加减减。这也就是解释了，为什么BTC这么慢的TPS，在交易所每秒却有成百上千的挂单成交。&lt;/p&gt;
+
+&lt;p&gt;因为每个钱包余额都是透明的，所以你可以看到头部的钱包基本都是交易所的钱包。&lt;/p&gt;
+
+&lt;p&gt;交易所其实是个很坑的东西，首先挂单交易都需要手续费，你划转到钱包需要手续费。而且你在交易所的币实际上都在他的钱包里，理论上他可以拿你的钱做任何的事。&lt;/p&gt;
+
+&lt;h3 id=&quot;总结&quot;&gt;总结&lt;/h3&gt;
+
+&lt;p&gt;系统地了解完BTC的整个机制之后，感叹这确实不像十多年前设计的东西，思路真的太超前了，当我们还在拼命寻求一个公平公开透明的中心化机制的时候，设计者已经开创了一个这样的自由公开透明的国度。虽然我觉得设计者在设计之初一定没想到在十几年后的今年，BTC会对世界产生这么大的影响。现如今在加密货币的世界中，所有的项目都是在此基础之上进行搭建改造的。这真是一门另人着迷的技术啊。&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 11 Nov 2021 14:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/11/11/%E6%B5%85%E8%B0%88%E5%8C%BA%E5%9D%97%E9%93%BE-%E4%B8%80/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/11/11/%E6%B5%85%E8%B0%88%E5%8C%BA%E5%9D%97%E9%93%BE-%E4%B8%80/</guid>
+        
+        <category>区块链</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Xcode13.0 iOS15 debug异常崩溃</title>
+        <description>&lt;p&gt;早上应用各种崩溃，一个应用WKWebiew莫名崩溃、另一个则是起都起不来。只要不是处于调试模式下都OK，即便是从模拟器点开app。分析了半天还是同事告知是苹果出了问题….&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-15-release-notes/&quot;&gt;iOS &amp;amp; iPadOS 15 Release Notes&lt;/a&gt;
+&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-e58ca44985dd5d5d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;临时解决办法&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Workaround: In Xcode, select Product &amp;gt; Scheme &amp;gt; Edit Scheme, 
+then deselect Run &amp;gt; Options &amp;gt; Queue Debugging &amp;gt; “Enable backtrace recording.”
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;先这么的，乖乖等13.1吧 - - 。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 12 Oct 2021 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2021/10/12/xcodebug/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021/10/12/xcodebug/</guid>
+        
+        <category>Xcode</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Peter John Landin</title>
+        <description>&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Peter_Landin&quot;&gt;wiki&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%BD%BC%E5%BE%97%C2%B7%E5%85%B0%E4%B8%81&quot;&gt;维基&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I was long curious about how does λ calculus become the foundation of formalizaing programming languages. It’s strange that I haven’t look up the answer until today: It’s invented so early by Alonzo Church (whom I will write another post for) as an alternative mathematic foundation in 1930s and its relation with programming language was re-discoverred in 1960s.&lt;/p&gt;
+
+&lt;p&gt;From the “Lambda calculus and programming languages” section of wikipedia page:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;As pointed out by Peter Landin’s 1965 paper “A Correspondence between ALGOL 60 and Church’s Lambda-notation”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I found this name quite familiar since I read his paper “The mechanical evaluation of expressions” before, in which he introduced the first abstract machine for functional programming language, namely &lt;a href=&quot;https://en.wikipedia.org/wiki/SECD_machine&quot;&gt;SECD machine&lt;/a&gt;. This paper also define the term &lt;a href=&quot;https://en.wikipedia.org/wiki/Closure_(computer_programming)&quot;&gt;Closure&lt;/a&gt; which becomes a prevalent notion in computer programming nowadays.&lt;/p&gt;
+
+&lt;p&gt;Besides of that, his contributions also include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;on ALGO definition&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/ISWIM&quot;&gt;ISWIM&lt;/a&gt; programming language&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Off-side_rule&quot;&gt;off-side rule&lt;/a&gt;, known as “indentation-based” syntax nowadays, popularized by Miranda, Haskell, Python, etc.&lt;/li&gt;
+  &lt;li&gt;coin the term &lt;a href=&quot;https://en.wikipedia.org/wiki/Syntactic_sugar&quot;&gt;syntactic sugar&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;He was much influenced by a study of McCarthy’s LISP and taught &lt;a href=&quot;https://en.wikipedia.org/wiki/Tony_Hoare&quot;&gt;Tony Hoare&lt;/a&gt; ALGO with Peter Naur and Edsger W. Dijkstra. (Oh yes, definitely 4 more people to write).&lt;/p&gt;
+
+&lt;p&gt;I have just download his old, influential paper “The next 700 programming languages”. 
+I am sure it will be an enjoyable read.&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 13 Sep 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/09/13/peter-john-landin/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/09/13/peter-john-landin/</guid>
+        
+        <category>Xcode</category>
+        
+        
+      </item>
     
       <item>
         <title>第一篇博客</title>
@@ -25,10 +153,8 @@
 &lt;p&gt;然后打开 http://localhost:4000，就可以看到默认模版了，最后用GitHub Pages部署即可，祝大家玩得开心。&lt;/p&gt;
 </description>
         <pubDate>Tue, 21 Aug 2018 08:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/08/firstblog/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/08/firstblog/</guid>
-        
-        <category>wbq</category>
+        <link>http://localhost:4000/2018/08/21/firstblog/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/21/firstblog/</guid>
         
         
       </item>
