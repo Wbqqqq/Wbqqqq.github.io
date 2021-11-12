@@ -17,3 +17,5 @@ date: 2018-08-21 8:00
 ```
 
 然后打开 http://localhost:4000，就可以看到默认模版了，最后用GitHub Pages部署即可，祝大家玩得开心。
+
+模版无耻抄的大神:https://huangxuan.me/
