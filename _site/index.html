@@ -429,15 +429,15 @@ wk很容易就可以使用jsbridge，只要在configuration.userContentControlle
         
         <div class="post-content-preview">
             
-                前言
+                原因
 
-关于Java的HashMap的资料真的太多了，用被研究“烂”了形容也一点不过分😂，此篇文章就几个疑难问题加上自己这两天的研究，做个总结。
+最近开发过程中因为自己的错误操作导致了一个很傻问题。感觉是一个基于内存管理，Block，指针的综合问题。整个理解下来，对上述概念有些了新的认识，觉得值得记录一次。首先非常鸣谢一道题考你对__autoreleasing和__block的理解的作者，本次记录的问题，基本也是基于作者提供的理解思路。
 
-1.原理实现细节总结
+提问
 
-1.hashMap在Jdk1.7和1.8略有不一样，1.7是数组+链表，1.8是数组+链表+红黑树。
+我把日常的业务稍微精简了成了以下代码:
 
-2.通过系统提供或者自定义的hashCode()算法算出key的hashCode&amp;table.lenth - ...
+“网络请求，把error作为二级指针传...
             
         </div>
     </a>
