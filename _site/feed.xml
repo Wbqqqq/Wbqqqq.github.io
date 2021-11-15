@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 15 Nov 2021 09:46:33 +0800</pubDate>
-    <lastBuildDate>Mon, 15 Nov 2021 09:46:33 +0800</lastBuildDate>
+    <pubDate>Mon, 15 Nov 2021 09:51:03 +0800</pubDate>
+    <lastBuildDate>Mon, 15 Nov 2021 09:51:03 +0800</lastBuildDate>
     <generator>Jekyll v4.2.1</generator>
     
       <item>
@@ -1408,21 +1408,13 @@ o = temp;//在这里赋值时temp还是nil，导致o始终是nil
         <title>重读YYImage</title>
         <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
 
-&lt;p&gt;这篇文章写在我毕业工作的第五个年头，从前一直觉得自己挺牛的，什么东西都一学就会。&lt;/p&gt;
-
 &lt;p&gt;实至今日，才发现自己的能力在各方面和牛逼的人差距还是挺大的。计算机的很多基础知识都很薄弱。&lt;/p&gt;
 
-&lt;p&gt;青春期最最最后悔的事，就是没有好好读书，天天想着怎么逃课，泡妞。&lt;/p&gt;
-
-&lt;p&gt;其实15年刚刚做iOS的时候就接触过YYImage，当时就是觉得挺屌的，大家都在吹，我也用呗。也没有好好读过源码。&lt;/p&gt;
+&lt;p&gt;其实15年刚刚做iOS的时候就接触过YYImage，但也没有好好读过源码。&lt;/p&gt;
 
 &lt;p&gt;最近因为业务需要，对各种图片格式也有了新的认识，索性重新来读一遍YYImage，顺便总结一些感想&lt;/p&gt;
 
-&lt;p&gt;YYImage是YYKit系列中的其中一个组件，大神自己口述是在大概搞iOS的第五个年头写出来的。&lt;/p&gt;
-
-&lt;p&gt;我自认为我在第五个年头，才能静下心来把源码好好地从头到尾理顺，而人家已经在第五个年头发布了这个iOS中国最优秀之一的框架。&lt;/p&gt;
-
-&lt;p&gt;其实自己跟别人比起来，真是没什么天赋，只有多花时间，少一些玩的时间。&lt;/p&gt;
+&lt;p&gt;YYImage是YYKit系列中的其中一个组件。&lt;/p&gt;
 
 &lt;h2 id=&quot;正文&quot;&gt;正文&lt;/h2&gt;
 
