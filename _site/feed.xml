@@ -5,15 +5,15 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 15 May 2022 23:09:35 +0800</pubDate>
-    <lastBuildDate>Sun, 15 May 2022 23:09:35 +0800</lastBuildDate>
+    <pubDate>Sun, 15 May 2022 23:17:33 +0800</pubDate>
+    <lastBuildDate>Sun, 15 May 2022 23:17:33 +0800</lastBuildDate>
     <generator>Jekyll v4.2.1</generator>
     
       <item>
         <title>聊聊libffi的调用机制</title>
         <description>&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
 
-&lt;p&gt;花了点时间分析了下libffi的调用流程，做个总结。&lt;/p&gt;
+&lt;p&gt;花了点时间分析了下libffi的调用机制，做个总结。&lt;/p&gt;
 
 &lt;h2 id=&quot;什么是libffi&quot;&gt;什么是libffi&lt;/h2&gt;
 
@@ -399,7 +399,7 @@
 
 &lt;p&gt;申明的函数都会在库的内部绑上统一函数实现，可以理解为一个跳板（trampoline）,通过这个跳板函数，找到之前申明的函数调用上下文环境（如参数类型、返回值类型等等），和入参组装之后，再一起跳转丢给到&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bind_func&lt;/code&gt;，接下来梳理下大致流程。&lt;/p&gt;
 
-&lt;h3 id=&quot;0x01创建跳板页&quot;&gt;0x01.创建跳板页&lt;/h3&gt;
+&lt;h4 id=&quot;0x01创建跳板页&quot;&gt;0x01.创建跳板页&lt;/h4&gt;
 
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 2
@@ -423,7 +423,7 @@
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vm_allocate&lt;/code&gt;这个函数是linux底层分配的内存的函数，他只能以页为单位来分配连续的内存，分配之后不会立即进行与物理内存的映射，在这里是开辟了两个页的虚拟内存，一个作为配置页，一个作为占位页。&lt;/p&gt;
 
-&lt;h3 id=&quot;0x02vm_remap&quot;&gt;0x02.vm_remap&lt;/h3&gt;
+&lt;h4 id=&quot;0x02vm_remap&quot;&gt;0x02.vm_remap&lt;/h4&gt;
 
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 2
@@ -473,7 +473,7 @@
 
 &lt;p&gt;vm_remap的作用是内存映射，通过它，我们就能实现一个对象通过多个不同的地址来进行访问，在这里是把上述&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0x01&lt;/code&gt;中的占位页的首地址映射到了一个函数上（&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ffi_closure_trampoline_table_page&lt;/code&gt;），该函数由汇编实现。&lt;/p&gt;
 
-&lt;h3 id=&quot;0x03创建跳板表&quot;&gt;0x03.创建跳板表&lt;/h3&gt;
+&lt;h4 id=&quot;0x03创建跳板表&quot;&gt;0x03.创建跳板表&lt;/h4&gt;
 
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 2
@@ -579,7 +579,7 @@
 
 &lt;p&gt;到此为止一个&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;closure&lt;/code&gt;算是创建完毕了，里面具备了基本的调用环境。&lt;/p&gt;
 
-&lt;h3 id=&quot;0x04ffi_prep_closure_loc&quot;&gt;0x04.ffi_prep_closure_loc&lt;/h3&gt;
+&lt;h4 id=&quot;0x04ffi_prep_closure_loc&quot;&gt;0x04.ffi_prep_closure_loc&lt;/h4&gt;
 
 &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 2
@@ -613,7 +613,7 @@
 
 &lt;p&gt;&lt;img src=&quot;https://upload-images.jianshu.io/upload_images/2782305-3a5eb61c0102c90e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;未命名文件.jpg&quot; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;0x05funcinvoke2-3&quot;&gt;0x05.funcInvoke(2, 3);&lt;/h3&gt;
+&lt;h4 id=&quot;0x05funcinvoke2-3&quot;&gt;0x05.funcInvoke(2, 3);&lt;/h4&gt;
 
 &lt;p&gt;当真正发生函数调用时，发生了什么呢？&lt;/p&gt;
 
