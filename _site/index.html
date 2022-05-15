@@ -238,6 +238,64 @@
       col-xs-12 postlist-container">
       
 <div class="post-preview">
+    <a href="/2022/05/15/%E8%81%8A%E8%81%8Alibffi%E7%9A%84%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6/">
+        <h2 class="post-title">
+            2022-05-15-聊聊libffi的调用机制
+        </h2>
+        
+        <div class="post-content-preview">
+            
+                背景
+
+花了点时间分析了下libffi的调用流程，做个总结。
+
+什么是libffi
+
+libffi是ffi的主流实现方式，其主要是用C和汇编来实现的。
+
+原理和用法市面上已经很多，下面这两篇是我觉得讲得较为通俗易懂的，这里就不做过多的解释了。
+
+外部函数接口 FFI —— 虚拟机中重要但不起眼的组件
+
+使用 libffi 实现 AOP
+
+libffi的调用流程
+
+PS:最近换了M1，所以以下...
+            
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Wbq's Blog on May 15, 2022
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2022/02/22/%E5%9C%A8FlutterBoost%E4%B8%8BFadeInImage%E5%8F%8D%E5%A4%8D%E5%88%B7%E6%96%B0%E9%97%AE%E9%A2%98/">
+        <h2 class="post-title">
+            在FlutterBoost下FadeInImage反复刷新问题
+        </h2>
+        
+        <div class="post-content-preview">
+            
+                问题背景
+
+路由框架采用flutterboost，根视图UITabbarController的其中一个item的页面是flutter，该flutter页面采用了FadeInImage显示图片，其余都是native。在剩余的native中可以点击进入flutter页面。直接看现象:
+
+
+
+结果:只要切换了别的flutter页面再回内嵌在TabbarItem的flutter页面，页面中的图片就会...
+            
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Wbq's Blog on February 22, 2022
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2021/11/11/%E6%B5%85%E8%B0%88%E5%8C%BA%E5%9D%97%E9%93%BE-%E4%B8%80/">
         <h2 class="post-title">
             浅谈区块链（一）
@@ -447,68 +505,6 @@ wk很容易就可以使用jsbridge，只要在configuration.userContentControlle
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2020/09/20/%E9%87%8D%E8%AF%BBYYImage%E6%9C%89%E6%84%9F/">
-        <h2 class="post-title">
-            重读YYImage
-        </h2>
-        
-        <div class="post-content-preview">
-            
-                前言
-
-实至今日，才发现自己的能力在各方面和牛逼的人差距还是挺大的。计算机的很多基础知识都很薄弱。
-
-其实15年刚刚做iOS的时候就接触过YYImage，但也没有好好读过源码。
-
-最近因为业务需要，对各种图片格式也有了新的认识，索性重新来读一遍YYImage，顺便总结一些感想
-
-YYImage是YYKit系列中的其中一个组件。
-
-正文
-
-其实纵观整个YYImage还是基于ImageIO和Co...
-            
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by wbq on September 20, 2020
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2020/09/15/BlockHook/">
-        <h2 class="post-title">
-            block hook
-        </h2>
-        
-        <div class="post-content-preview">
-            
-                导言
-
-block作为oc极为重要的一部分从来都是面试和开发乐此不疲的话题与工具。
-
-关于block的数据结构和实现原理网上大大小小真的已经很多了，这里不再叙述，最近有业务需求需要hook block 进行一些无埋点的监控，所以顺便记录下学习过程。
-
-方案
-
-当前blockhook的方案大致有两种:
-
-1.基于libffi的blockhook
-
-libffi的原理和用法这里不予赘述了。
-
-大...
-            
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by wbq on September 15, 2020
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -632,7 +628,7 @@ libffi的原理和用法这里不予赘述了。
 </ul>
 
                 <p class="copyright text-muted">
-                    Copyright &copy; Wbq's Blog 2021
+                    Copyright &copy; Wbq's Blog 2022
                 </p>
             </div>
         </div>
