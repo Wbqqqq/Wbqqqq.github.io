@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61ca8cbf-ddda-4cc3-9271-02f3d9e4b914" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/_posts/2022-05-15-聊聊libffi的调用机制.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_site/feed.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_site/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/_site/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/2022-05-15-聊聊libffi的调用机制.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2022-05-15-聊聊libffi的调用机制.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,7 +176,7 @@
       <updated>1534773608684</updated>
       <workItem from="1534773610067" duration="11010000" />
       <workItem from="1645511977827" duration="299000" />
-      <workItem from="1652625107496" duration="1442000" />
+      <workItem from="1652625107496" duration="1540000" />
     </task>
     <task id="LOCAL-00001" summary="修改README">
       <created>1534815091466</created>
