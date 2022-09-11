@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61ca8cbf-ddda-4cc3-9271-02f3d9e4b914" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/_posts/2022-09-11-差点被骗了一个ETH.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2022-05-15-聊聊libffi的调用机制.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2022-05-15-聊聊libffi的调用机制.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_site/feed.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_site/feed.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -155,6 +155,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -178,7 +179,8 @@
       <updated>1534773608684</updated>
       <workItem from="1534773610067" duration="11010000" />
       <workItem from="1645511977827" duration="299000" />
-      <workItem from="1652625107496" duration="2008000" />
+      <workItem from="1652625107496" duration="3813000" />
+      <workItem from="1662906419793" duration="75000" />
     </task>
     <task id="LOCAL-00001" summary="修改README">
       <created>1534815091466</created>
