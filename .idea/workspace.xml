@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="61ca8cbf-ddda-4cc3-9271-02f3d9e4b914" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/123.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/img/123.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2023-06-11-保险链接.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2023-06-11-保险链接.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/2022-09-11-差点被骗了一个ETH.md" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2022-09-11-差点被骗了一个ETH.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +143,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/img" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/_posts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.prettier" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -160,7 +158,6 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/img" />
       <recent name="$PROJECT_DIR$/_posts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -182,7 +179,6 @@
       <workItem from="1645511977827" duration="299000" />
       <workItem from="1652625107496" duration="3813000" />
       <workItem from="1662906419793" duration="960000" />
-      <workItem from="1686720106765" duration="1405000" />
     </task>
     <task id="LOCAL-00001" summary="修改README">
       <created>1534815091466</created>
